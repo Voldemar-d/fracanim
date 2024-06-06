@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 		if (bBreak)
 			std::cout << "Aborted by user.\n";
 		else
-			std::cout << "Finished saving" << nsteps << " images.\n";
+			std::cout << "Finished saving " << nsteps << " images.\n";
 	}
 
 	return 0;
