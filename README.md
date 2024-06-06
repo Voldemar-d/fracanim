@@ -55,7 +55,7 @@ Creates one image 'D:\tmp\png\image.png' with default width and height (1280x720
 <pre>
 fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
 </pre>
-Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores.
+Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores. Coefficients are changed in 1000 steps between default values - coef1: 1.0 -> 2.0, coef2: 0.0 -> 0.5
 <pre>
 fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080 -coef1 1.0 -coef1end 5.0 -coef2 0 -coef2end 0 -threads half
 </pre>
