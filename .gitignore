@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Output files for WSL (Ubuntu)
+wsl/
+
+# bak files after external editor
+*.bak
