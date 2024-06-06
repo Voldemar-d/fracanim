@@ -25,7 +25,7 @@ const uint32_t clr[] = {
 void CFracDraw::DrawSinCos(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
 	const double Coef1, const double Coef2) const
 {
-	int j = 0, x, y;
+	int x, y;
 	double fx, fy, d, f;
 	srand(1);
 	const double fw = w, fh = h, rm = 1.0 / double(RAND_MAX), coef1 = Coef1, coef2 = Coef2;

@@ -20,7 +20,8 @@ void printHelp(char** argv) {
 	std::cout << "-coef2 {v}\t\tset value (float) of coefficient 2, 0.0 by default" << '\n';
 	std::cout << "-coef1end {v}\t\tset ending value (float) of coefficient 1, 2.0 by default" << '\n';
 	std::cout << "-coef2end {v}\t\tset ending value (float) of coefficient 2, 0.5 by default" << '\n';
-	std::cout << "-threads {N}\t\tset number of running threads (maximal by default), use -threads half for 1/2 CPU load." << '\n';
+	std::cout << "-threads {N}\t\tset number of running threads (maximal by default), use -threads half for 1/2 CPU cores number." << '\n';
+	std::cout << std::thread::hardware_concurrency() << " maximal threads available." << '\n';
 	std::cout << '\n' << "Pressing 'q' stops writing image series." << '\n';
 }
 
