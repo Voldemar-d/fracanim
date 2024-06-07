@@ -1,5 +1,5 @@
 # fracanim
-Fractal image generator (see sample image in file '[image.png](https://github.com/Voldemar-d/fracanim/blob/main/image.png)'). C++ code based on the following algorithm:
+Fractal image generator (see sample image in file 'image.png'). C++ code based on the following algorithm:
 <pre>
 int w, h - output image width and height 
 double coef1, coef2 - coefficients with default values 1.0 and 0.0
@@ -22,7 +22,7 @@ for (int j = 0; j < 500; j++) {
 </pre>
 Uses [libpng](https://github.com/libpng/libpng/tree/main "libpng") library for saving generated images to PNG files. Requires C++20. Compiled and tested under Windows and Ubuntu (WSL).
 
-Allows to save series of images with animation of **coef1** and **coef2** coefficients between specified values.
+The code above generates one image. The program allows to save series of images with animation of **coef1** and **coef2** coefficients between specified values.
 
 Default range: **coef1** from 1.0 to 2.0, **coef2** from 0.0 to 0.5.
 
@@ -55,7 +55,9 @@ Creates one image 'D:\tmp\png\image.png' with default width and height (1280x720
 <pre>
 fracanim.exe -outfolder D:\tmp\png -coef1 1.0 -coef2 0.125 -width 800 -height 450
 </pre>
-Creates one [image](https://github.com/Voldemar-d/fracanim/blob/main/image.png) 'D:\tmp\png\image.png' with 800x450 width and height, uses values: coef1=1.2 and coef2=0.125
+Creates one image 'D:\tmp\png\image.png' with 800x450 width and height, uses values: coef1=1.0 and coef2=0.125
+
+This was used to create sample image in file 'image.png' 
 <pre>
 fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
 </pre>
