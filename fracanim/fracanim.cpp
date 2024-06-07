@@ -7,9 +7,14 @@
 
 namespace fs = std::filesystem;
 
-void printHelp(char** argv) {
+void printHelp(char** argv, const bool bFull) {
 	fs::path fmain(argv[0]);
 	std::cout << "Usage: " << fmain.filename() << " [options]" << '\n';
+	if (!bFull) {
+		std::cout << "Display help for all options:\n";
+		std::cout << fmain.filename() << " -help\n";
+		return;
+	}
 	std::cout << "\noptions can be:" << '\n';
 	std::cout << "-help\t\t\tdisplay this help" << '\n';
 	std::cout << "-width {N}\t\tset output image width in pixels, 1280 by default" << '\n';
@@ -35,13 +40,17 @@ std::string getFullPath(std::string_view folder) {
 
 int main(int argc, char* argv[])
 {
+	if (argc < 2) {
+		printHelp(argv, false);
+		return 0;
+	}
 	std::vector<std::string> all_args;
 	if (argc > 1)
 		all_args.assign(argv + 1, argv + argc);
 	InputParser input(all_args);
 
 	if (input.cmdOptionExists("-help")) {
-		printHelp(argv);
+		printHelp(argv, true);
 		return 0;
 	}
 

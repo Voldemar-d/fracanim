@@ -77,7 +77,7 @@ void CFracDraw::DrawPix(pixColorMap& pcmap, pixBuf& pixb, const int w, const int
 		const auto x = pix.first.first, y = pix.first.second;
 		auto& v = pixb[y * w + x];
 		const auto& cmap = pix.second;
-		for (auto& clr : cmap) {
+		for (auto const& clr : cmap) {
 			// color weight
 			kc = clr.second;
 			if (kc > mix) kc = mix;
@@ -128,6 +128,7 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 	const int nFrom1, const int nTo1, const int nFrom2, const int nTo2, std::promise<void> pr)
 {
 	m_nWorking++;
+	// signal thread started
 	pr.set_value();
 	pixColorMap map; pixBuf pix;
 	double coef1, coef2;
