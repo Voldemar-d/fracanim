@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 	int nthreads = 0;
 	if (input.cmdOptionExists("-threads")) {
 		const auto& param = input.getThisOption();
-		if (param.starts_with("half"))
+		if (param == "half")
 			nthreads = nmaxthreads / 2;
 		else
 			nthreads = atoi(param.c_str());
@@ -100,6 +100,8 @@ int main(int argc, char* argv[])
 		nthreads = nmaxthreads;
 	else if (nthreads > nmaxthreads)
 		nthreads = nmaxthreads;
+	if (nthreads > nsteps)
+		nthreads = nsteps;
 
 	double coef1 = 1.0, coef2 = 0.0, coef1end = 2.0, coef2end = 0.5;
 	if (input.cmdOptionExists("-coef1")) {

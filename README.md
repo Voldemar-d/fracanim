@@ -1,5 +1,5 @@
 # fracanim
-Fractal image generator. C++ code based on the following algorithm:
+Fractal image generator (see sample image in file '[image.png](https://github.com/Voldemar-d/fracanim/blob/main/image.png)'). C++ code based on the following algorithm:
 <pre>
 int w, h - output image width and height 
 double coef1, coef2 - coefficients with default values 1.0 and 0.0
@@ -52,6 +52,10 @@ If one image is generated, file name 'image.png' is used, and 'imageNNNNN.png' f
 fracanim.exe -outfolder D:\tmp\png -coef1 1.2 -coef2 0.1
 </pre>
 Creates one image 'D:\tmp\png\image.png' with default width and height (1280x720), uses values: coef1=1.2 and coef2=0.1
+<pre>
+fracanim.exe -outfolder D:\tmp\png -coef1 1.0 -coef2 0.125 -width 800 -height 450
+</pre>
+Creates one [image](https://github.com/Voldemar-d/fracanim/blob/main/image.png) 'D:\tmp\png\image.png' with 800x450 width and height, uses values: coef1=1.2 and coef2=0.125
 <pre>
 fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
 </pre>
