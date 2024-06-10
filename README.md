@@ -26,7 +26,7 @@ The code above generates one image. The program allows to save series of images 
 
 Default range: **coef1** from 1.0 to 2.0, **coef2** from 0.0 to 0.5.
 
-Number of working threads can be specified for faster images generation and saving. Number of (logical) CPU cores is used by default for maximal speed.
+Number of working threads can be specified for faster images generation and saving. Half number of (logical) CPU cores is used by default.
 
 **WARNING**: this loads CPU up to 100%, use with care.
 
@@ -64,6 +64,6 @@ fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080
 </pre>
 Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores. Coefficients are changed in 1000 steps between default values - coef1: 1.0 -> 2.0, coef2: 0.0 -> 0.5
 <pre>
-fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080 -coef1 1.0 -coef1end 5.0 -coef2 0 -coef2end 0 -threads half
+fracanim.exe -outfolder D:\tmp\png -steps 1000 -width 1920 -height 1080 -coef1 1.0 -coef1end 5.0 -coef2 0 -coef2end 0 -threads max
 </pre>
-Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on half available CPU cores (makes less CPU load). Only animation of coef1 from 1.0 to 5.0, coef2 isn't used (set to zero).
+Creates 1000 images (1920x1080 pixels) in 'D:\tmp\png' folder running on all available CPU cores (with maximal CPU load). Only animation of coef1 from 1.0 to 5.0, coef2 isn't used (set to zero).
