@@ -43,7 +43,8 @@ options can be:
 -coef2 {v}		set value (float) of coefficient 2, 0.0 by default
 -coef1end {v}		set ending value (float) of coefficient 1, 2.0 by default
 -coef2end {v}		set ending value (float) of coefficient 2, 0.5 by default
--threads {N}		set number of running threads (maximal by default), use -threads half for 1/2 CPU cores number.
+-threads {N}		set number of running threads: use -threads max to use CPU cores number,
+use -threads half to use 1/2 CPU cores number (default) or specify a number, e.g. -threads 4
 Pressing 'q' stops writing image series.
 </pre>
 If one image is generated, file name 'image.png' is used, and 'imageNNNNN.png' for image series.

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <png.h>
 #include <cstdint>
 #include <vector>

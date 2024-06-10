@@ -107,7 +107,7 @@ void CFracDraw::Stop() {
 }
 
 void CFracDraw::SaveSteps(const int nthreads, std::string_view outfolder, const int w, const int h,
-	const int nFrom1, const int nTo1, const int nFrom2, const int nTo2, const int nTotal)
+	const double dFrom1, const double dTo1, const double dFrom2, const double dTo2, const int nTotal)
 {
 	m_outFolder = outfolder;
 	m_nCnt = 0;
@@ -116,8 +116,8 @@ void CFracDraw::SaveSteps(const int nthreads, std::string_view outfolder, const 
 	m_bStop = false; m_nWorking = 0;
 	for (int i = 0; i < nStep; i++) {
 		std::promise<void> pr; std::future<void> fut = pr.get_future();
-		m_thr.emplace_back(std::thread([this, w, h, i, nStep, nTotal, nFrom1, nTo1, nFrom2, nTo2, &pr]() {
-			SaveStep(w, h, i, nStep, nTotal, nFrom1, nTo1, nFrom2, nTo2, std::move(pr));
+		m_thr.emplace_back(std::thread([this, w, h, i, nStep, nTotal, dFrom1, dTo1, dFrom2, dTo2, &pr]() {
+			SaveStep(w, h, i, nStep, nTotal, dFrom1, dTo1, dFrom2, dTo2, std::move(pr));
 			}));
 		// wait until thread is started
 		fut.get();
@@ -125,7 +125,7 @@ void CFracDraw::SaveSteps(const int nthreads, std::string_view outfolder, const 
 }
 
 void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int nStep, const int nTotal,
-	const int nFrom1, const int nTo1, const int nFrom2, const int nTo2, std::promise<void> pr)
+	const double dFrom1, const double dTo1, const double dFrom2, const double dTo2, std::promise<void> pr)
 {
 	m_nWorking++;
 	// signal thread started
@@ -133,9 +133,8 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 	pixColorMap map; pixBuf pix;
 	double coef1, coef2;
 	int i = nStart;
-	const double dRange1 = double(nTo1) - double(nFrom1), dFrom1 = nFrom1,
-		dRange2 = double(nTo2) - double(nFrom2), dFrom2 = nFrom2,
-		dk = 1.0 / double(nTotal), dm = 1.0 / 1000.0;
+	const double dRange1 = dTo1 - dFrom1, dRange2 = dTo2 - dFrom2,
+		dk = 1.0 / double(nTotal);
 	std::thread th;
 	std::vector<uint8_t> buf(w * h * 3);
 	while (i < nTotal) {
@@ -143,8 +142,8 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 			break;
 		if (i > m_nCnt)
 			m_nCnt = i;
-		coef1 = (dFrom1 + double(i) * dRange1 * dk) * dm;
-		coef2 = (dFrom2 + double(i) * dRange2 * dk) * dm;
+		coef1 = dFrom1 + double(i) * dRange1 * dk;
+		coef2 = dFrom2 + double(i) * dRange2 * dk;
 		DrawSinCos(map, pix, w, h, coef1, coef2);
 		if (th.joinable())
 			th.join();
@@ -159,7 +158,7 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 		m_nWorking--;
 }
 
-void CFracDraw::SaveImg(const int w, const int h, int i, const pixBuf& pix, uint8_t* buf, std::thread& th) {
+void CFracDraw::SaveImg(const int w, const int h, const int i, const pixBuf& pix, uint8_t* buf, std::thread& th) {
 	fs::path fpath(m_outFolder);
 	std::string fname = std::format("image{:05d}.png", i);
 	fpath.append(fname);

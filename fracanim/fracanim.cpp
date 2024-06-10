@@ -1,11 +1,9 @@
-﻿// fracanim.cpp : Defines the entry point for the application.
-//
-
-#include "fracanim.h"
+﻿#include "fracanim.h"
 #include "inputparser.h"
 #include "fracdraw.h"
 
 namespace fs = std::filesystem;
+namespace cr = std::chrono;
 
 void printHelp(char** argv, const bool bFull) {
 	fs::path fmain(argv[0]);
@@ -25,7 +23,7 @@ void printHelp(char** argv, const bool bFull) {
 	std::cout << "-coef2 {v}\t\tset value (float) of coefficient 2, 0.0 by default" << '\n';
 	std::cout << "-coef1end {v}\t\tset ending value (float) of coefficient 1, 2.0 by default" << '\n';
 	std::cout << "-coef2end {v}\t\tset ending value (float) of coefficient 2, 0.5 by default" << '\n';
-	std::cout << "-threads {N}\t\tset number of running threads (maximal by default), use -threads half for 1/2 CPU cores number." << '\n';
+	std::cout << "-threads {N}\t\tset number of running threads: use -threads max to use CPU cores number,\nuse -threads half to use 1/2 CPU cores number (default) or specify a number, e.g. -threads 4" << '\n';
 	std::cout << std::thread::hardware_concurrency() << " maximal threads available." << '\n';
 	std::cout << '\n' << "Pressing 'q' stops writing image series." << '\n';
 }
@@ -91,13 +89,15 @@ int main(int argc, char* argv[])
 	int nthreads = 0;
 	if (input.cmdOptionExists("-threads")) {
 		const auto& param = input.getThisOption();
+		if (param == "max")
+			nthreads = nmaxthreads;
 		if (param == "half")
 			nthreads = nmaxthreads / 2;
 		else
 			nthreads = atoi(param.c_str());
-	}	
+	}
 	if (nthreads < 1)
-		nthreads = nmaxthreads;
+		nthreads = nmaxthreads / 2;
 	else if (nthreads > nmaxthreads)
 		nthreads = nmaxthreads;
 	if (nthreads > nsteps)
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
 #endif
 		return false;
 	};
-	
+
 	if (nsteps < 2) {
 		fs::path fpath(outfolder);
 		fpath.append("image.png");
@@ -165,23 +165,22 @@ int main(int argc, char* argv[])
 	else {
 		std::cout << "Generating and saving " << nsteps << " images (" << width << " x " << height << ") to:\n";
 		std::cout << outfolder << '\n';
-		const int nFrom1 = int(coef1 * 1000.0 + 0.5), nTo1 = int(coef1end * 1000.0 + 0.5),
-			nFrom2 = int(coef2 * 1000.0 + 0.5), nTo2 = int(coef2end * 1000.0 + 0.5);
 		bool bBreak = false;
+		const auto tstart = cr::steady_clock::now();
 		{
 			CFracDraw frac; int cnt = -1;
-			frac.SaveSteps(nthreads, outfolder, width, height, nFrom1, nTo1, nFrom2, nTo2, nsteps);
+			frac.SaveSteps(nthreads, outfolder, width, height, coef1, coef1end, coef2, coef2end, nsteps);
 			for (;;) {
 				if (funcStop()) {
 					bBreak = true;
 					break;
 				}
-				std::this_thread::sleep_for(std::chrono::milliseconds{ 500 });
+				std::this_thread::sleep_for(cr::milliseconds{ 500 });
 				if (frac.Finished())
 					break;
 				if (frac.GetCount() != cnt) {
 					cnt = frac.GetCount();
-					std::cout << "Saving image: " << cnt << "/" << nsteps << '\r';
+					std::cout << "Saving image: " << cnt + 1 << "/" << nsteps << '\r';
 				}
 			}
 			if (bBreak)
@@ -189,8 +188,11 @@ int main(int argc, char* argv[])
 		}
 		if (bBreak)
 			std::cout << "Aborted by user.\n";
-		else
-			std::cout << "Finished saving " << nsteps << " images.\n";
+		else {
+			const auto dur = cr::duration_cast<cr::milliseconds>(cr::steady_clock::now() - tstart);
+			const auto sdur = std::format("{:%H:%M:%S}", dur);
+			std::cout << "Finished saving " << nsteps << " images, time: " << sdur << '\n';
+		}
 	}
 
 	return 0;
