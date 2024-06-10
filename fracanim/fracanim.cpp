@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 		const auto& param = input.getThisOption();
 		if (param == "max")
 			nthreads = nmaxthreads;
-		if (param == "half")
+		else if (param == "half")
 			nthreads = nmaxthreads / 2;
 		else
 			nthreads = atoi(param.c_str());
