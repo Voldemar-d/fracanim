@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8'/>
+    <style>
+      #cnv {
+	  background : black;
+      }
+      input {
+	  width : 100px;
+      }
+    </style>
+  </head>
+  <body bgcolor = "black" text = "gray">
+    <h3 color="white">Sin/Cos fractals</h3>
+    <p>Change parameters of iteration formula.</p>
+    a: <input type='number' id="_a" step="0.01" value='1' onchange='restart()'/>
+    b: <input type='number' id="_b" step="0.01" value='0' onchange='restart()'/>
+    <p>Click on image to restart drawing.</p>
+    <br><canvas id="cnv" width='800' height='450'></canvas>
+  </body>
+  
+  <script>
+    var a, b, x, y, col
+    const colors = ['white','yellow','red','orange',
+		    'blue','cyan','magenta','green']
+    const W = 800
+    const H = 450
+    const canvas = document.getElementById("cnv")
+    const rect = canvas.getBoundingClientRect()
+    const ctx = canvas.getContext("2d")
+    ctx.globalAlpha = 0.1
+    canvas.addEventListener('mousedown', restart)
+   
+    function restart() {
+	col = 0
+	ctx.clearRect(0,0,W,H)
+	ctx.fillStyle = colors[col]
+	a = Number(_a.value)
+	b = Number(_b.value)
+    }
+        
+    function step() {
+	var pts = [[x,y]]
+
+	x = Math.random()
+	y = Math.random()
+	col = Math.floor(Math.random() * 8);
+	ctx.fillStyle = colors[col]
+	for (let i = 0; i < 1000; i++) {
+		pts.push([x,y,col])
+		x = (x + Math.sin(y - b)) % 1;
+		y = (y + Math.cos(x * a)) % 1;
+	}
+	pts.forEach(([x,y]) => ctx.fillRect(x*W,y*H,0.5,0.5))
+    }
+
+    x = Math.random()
+    y = Math.random()
+    restart()
+    window.setInterval(step,0)    
+  </script>
+</html>
