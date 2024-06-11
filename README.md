@@ -1,5 +1,5 @@
 # fracanim
-Fractal image generator (see sample image in file 'image.png'). C++ code based on the following algorithm:
+Fractal image generator (see sample image in file '**image.png**'). C++ code based on the following algorithm:
 <pre>
 int w, h - output image width and height 
 double coef1, coef2 - coefficients with default values 1.0 and 0.0
@@ -28,7 +28,13 @@ Default range: **coef1** from 1.0 to 2.0, **coef2** from 0.0 to 0.5.
 
 Number of working threads can be specified for faster images generation and saving. Half number of (logical) CPU cores is used by default.
 
-**WARNING**: this loads CPU up to 100%, use with care.
+**WARNING**: using all available CPU cores loads CPU about 100%, use with care.
+
+Additions:
+
+- sample video with animation of coef1 from 1.0 to 5.0: [https://youtu.be/wizIh5xM1IM](https://youtu.be/wizIh5xM1IM)
+- **sincos.html** file contains script for generating one image in browser (coefficients can be changed)
+- **win** subfolder contains archive with compiled executable for Windows. 
 
 ## Command line
 <pre>
