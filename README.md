@@ -1,5 +1,7 @@
 # fracanim
-Fractal image generator (see sample image in file '**image.png**'). C++ code based on the following algorithm:
+Fractal image generator (see sample image in file '**image.png**').
+![image](image.png)
+C++ code based on the following algorithm:
 <pre>
 int w, h - output image width and height 
 double coef1, coef2 - coefficients with default values 1.0 and 0.0
