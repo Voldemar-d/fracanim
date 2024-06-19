@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8'/>
+    <style>
+      #cnv {
+	  background : black;
+      }
+      input {
+	  width : 100px;
+      }
+    </style>
+  </head>
+  <body bgcolor = "black" text = "gray">
+    <h3 color="white">Lozi map</h3>
+    <p>Change parameters of iteration formula.</p>
+    B: <input type='number' id="_b" step="0.001" value='-1' onchange='restart()'/>
+    C: <input type='number' id="_c" step="0.01" value='0.5' onchange='restart()'/>
+    <p>Click on image to restart drawing.</p>
+    <canvas id="cnv" width='960' height='540'></canvas>
+  </body>
+  
+  <script>
+    var B, C, x, y, xlast, ylast, xnew, ynew, col
+    const colors = ['white','yellow','red','orange',
+		    'blue','cyan','magenta','green']
+    const W = 960
+    const H = 540
+    const xmin = -1.3
+    const xmax = 2.25
+    const xscale = 1.0 / (xmax - xmin)
+    const ymin = -2.25
+    const ymax = 1.25
+    const yscale = 1.0 / (ymax - ymin)
+    const canvas = document.getElementById("cnv")
+    const rect = canvas.getBoundingClientRect()
+    const ctx = canvas.getContext("2d")
+    ctx.globalAlpha = 0.2
+    canvas.addEventListener('mousedown', restart)
+   
+    function restart() {
+	col = 0
+	ctx.clearRect(0,0,W,H)
+	ctx.fillStyle = colors[col]
+	B = Number(_b.value)
+	C = Number(_c.value)
+    }
+        
+    function step() {
+	var pts = [[x,y]]
+
+	xlast = Math.random()
+	ylast = Math.random()
+	col = Math.floor(Math.random() * 8);
+	ctx.fillStyle = colors[col]
+	for (let i = 0; i < 500; i++) {
+		xnew = 1.0 + ylast - C * Math.abs(xlast)
+		ynew = B * xlast
+		xlast = xnew
+		ylast = ynew
+		x = (xnew - xmin) * xscale
+		y = (ynew - ymin) * yscale
+		pts.push([x,y,col])
+	}
+	pts.forEach(([x,y]) => ctx.fillRect(x*W,y*H,0.5,0.5))
+    }
+
+    x = Math.random()
+    y = Math.random()
+    restart()
+    window.setInterval(step,0)
+  </script>
+</html>
