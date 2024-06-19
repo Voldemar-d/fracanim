@@ -36,6 +36,7 @@ Number of working threads can be specified for faster images generation and savi
 Additions:
 
 - sample video with animation of coef1 from 1.0 to 5.0: [https://youtu.be/wizIh5xM1IM](https://youtu.be/wizIh5xM1IM)
+- the same video in 4K: [https://youtu.be/kjsQD5UlErI](https://youtu.be/kjsQD5UlErI)
 - **sincos.html** file contains script for generating one image in browser (coefficients can be changed)
 - **win** subfolder contains archive with compiled executable for Windows. 
 
