@@ -17,6 +17,7 @@ void printHelp(char** argv, const bool bFull) {
 	std::cout << "-help\t\t\tdisplay this help" << '\n';
 	std::cout << "-width {N}\t\tset output image width in pixels, 1280 by default" << '\n';
 	std::cout << "-height {N}\t\tset output image height in pixels, 720 by default" << '\n';
+	std::cout << "-mix\t\t\tmix pixel color with background without pixel/color mapping (turned off by default)" << '\n';
 	std::cout << "-outfolder {path}\tset output folder (will be created it doesn't exist) for saving image files" << '\n';
 	std::cout << "-steps {N}\t\tset number of output images (animation steps), 1 by default" << '\n';
 	std::cout << "-coef1 {v}\t\tset value (float) of coefficient 1, 1.0 by default" << '\n';
@@ -77,6 +78,7 @@ int main(int argc, char* argv[])
 		std::cout << "Width and height must be not less than 2 pixels\n";
 		return -1;
 	}
+	const bool bMix = input.cmdOptionExists("-mix");
 
 	int nsteps = 1;
 	if (input.cmdOptionExists("-steps")) {
@@ -154,10 +156,15 @@ int main(int argc, char* argv[])
 	if (nsteps < 2) {
 		fs::path fpath(outfolder);
 		fpath.append("image.png");
-		pixColorMap pcmap; pixBuf pix;
-		std::cout << "Generating image...\n";
+		std::cout << "Generating image (" << (bMix ? "mix color" : "use pixel/color mapping") << ")...\n";
 		CFracDraw frac;
-		frac.DrawSinCos(pcmap, pix, width, height, coef1, coef2);
+		pixBuf pix;
+		if (bMix)
+			frac.DrawSinCosMix(pix, width, height, coef1, coef2);
+		else {
+			pixColorMap pcmap;
+			frac.DrawSinCosMap(pcmap, pix, width, height, coef1, coef2);
+		}
 		std::vector<uint8_t> buf;
 		write_png_file(fpath.string().c_str(), width, height, (uint8_t*)pix.data(), buf);
 		std::cout << "Saved " << width << " x " << height << " image: " << fpath.string() << '\n';
@@ -165,10 +172,14 @@ int main(int argc, char* argv[])
 	else {
 		std::cout << "Generating and saving " << nsteps << " images (" << width << " x " << height << ") to:\n";
 		std::cout << outfolder << '\n';
+		if (bMix)
+			std::cout << "Mixing colors with background\n";
+		else
+			std::cout << "Using pixel/color mapping for mixing with background\n";
 		bool bBreak = false;
 		const auto tstart = cr::steady_clock::now();
 		{
-			CFracDraw frac; int cnt = -1;
+			CFracDraw frac(bMix); int cnt = -1;
 			frac.SaveSteps(nthreads, outfolder, width, height, coef1, coef1end, coef2, coef2end, nsteps);
 			for (;;) {
 				if (funcStop()) {

@@ -22,7 +22,34 @@ const uint32_t clr[] = {
 	RGB(0,0,255),
 };
 
-void CFracDraw::DrawSinCos(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
+void CFracDraw::DrawSinCosMix(pixBuf& pix, const int w, const int h,
+	const double Coef1, const double Coef2) const
+{
+	const size_t sz = w * h;
+	if (sz != pix.size()) pix.resize(sz);
+	std::fill(pix.begin(), pix.end(), 0);
+	int x, y;
+	double fx, fy, d, f;
+	srand(1);
+	const double fw = w, fh = h, rm = 1.0 / double(RAND_MAX), coef1 = Coef1, coef2 = Coef2;
+	uint32_t col = 0;
+	for (int j = 0; j < 500; j++) {
+		fx = double(rand()) * rm;
+		fy = double(rand()) * rm;
+		col = clr[rand() % std::size(clr)];
+		for (int i = 0; i < 1000; i++) {
+			x = int(fx * fw);
+			y = int(fy * fh);
+			MixPixel(pix, x, y, col, w, h, 7);
+			d = fx + sin(fy - coef2);
+			fx = modf(d, &f);
+			d = fy + cos(fx * coef1);
+			fy = modf(d, &f);
+		}
+	}
+}
+
+void CFracDraw::DrawSinCosMap(pixColorMap& pcmap, pixBuf& pix, const int w, const int h,
 	const double Coef1, const double Coef2) const
 {
 	int x, y;
@@ -97,6 +124,23 @@ void CFracDraw::DrawPix(pixColorMap& pcmap, pixBuf& pixb, const int w, const int
 	}
 }
 
+void CFracDraw::MixPixel(pixBuf& pix, const int x, const int y, const uint32_t col, const int w, const int h, const int mix) const
+{
+	if (x < 0 || y < 0 || x >= w || y >= h)
+		return;
+	auto& v = pix[y * w + x];
+	// RGB of background
+	int rb = GetRValue(v), gb = GetGValue(v), bb = GetBValue(v);
+	// RGB of color
+	int rc = GetRValue(col), gc = GetGValue(col), bc = GetBValue(col);
+	const int kc = 10 - mix, kb = 10 - kc;
+	// mix color and background with weight
+	rc = (rc * kc + rb * kb) / 10; if (rc > 255) rc = 255;
+	gc = (gc * kc + gb * kb) / 10; if (gc > 255) gc = 255;
+	bc = (bc * kc + bb * kb) / 10; if (bc > 255) bc = 255;
+	v = RGB(rc, gc, bc);
+}
+
 void CFracDraw::Stop() {
 	m_bStop = true;
 	for (auto& th : m_thr) {
@@ -144,7 +188,10 @@ void CFracDraw::SaveStep(const int w, const int h, const int nStart, const int n
 			m_nCnt = i;
 		coef1 = dFrom1 + double(i) * dRange1 * dk;
 		coef2 = dFrom2 + double(i) * dRange2 * dk;
-		DrawSinCos(map, pix, w, h, coef1, coef2);
+		if (m_bUseMap)
+			DrawSinCosMap(map, pix, w, h, coef1, coef2);
+		else
+			DrawSinCosMix(pix, w, h, coef1, coef2);
 		if (th.joinable())
 			th.join();
 		SaveImg(w, h, i, pix, buf.data(), th);
